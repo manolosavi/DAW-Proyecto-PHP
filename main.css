@@ -81,6 +81,6 @@ input[type="submit"]:hover {
 	 text-decoration: underline;
  }
 
-#error {
+#login-error, #register-error {
 	color: hsl(4, 95.1%, 58.8%);
 }

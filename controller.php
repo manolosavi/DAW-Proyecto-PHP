@@ -38,7 +38,7 @@ function register() {
     $sql = 'SELECT hash FROM `users` WHERE username = \''.$username.'\'';
     $rs = $conn->query($sql);
     if ($rs->num_rows != 0) {
-        header("location: login.php?error=Username not available");
+        header("location: login.php?register-error=Username not available");
         exit;
     }
 //  A higher "cost" is more secure but consumes more processing power
@@ -71,7 +71,7 @@ function login() {
     $sql = 'SELECT hash FROM `users` WHERE username = \''.$username.'\' LIMIT 1';
     $rs = $conn->query($sql);
     if ($rs->num_rows == 0) {
-        header("location: login.php?error=Incorrect username");
+        header("location: login.php?login-error=Incorrect username");
         exit;
     }
     if ($row = mysqli_fetch_array($rs)) {
@@ -81,7 +81,7 @@ function login() {
             setcookie("loggedIn", true, time()+3600);
             header("location: success.php");
         } else {
-            header("location: login.php?error=Incorrect password");
+            header("location: login.php?login-error=Incorrect password");
         }
         exit;
     }
@@ -101,12 +101,17 @@ function checkUsername(){
 
     $username = $_GET["username"];
 
-    $sql = 'SELECT username FROM `users`';
+    $sql = 'SELECT username FROM \'users\' WHERE \'username\' = \''.$username.'\'';
     $rs = $conn->query($sql);
+    if ($rs->num_rows == 0) {
+        echo "valid";
+        return;
+    }
     while ($row = mysqli_fetch_array($rs)){
         $DBUsername = $row["username"];
         if ($username == $DBUsername){
             echo "Username already in use";
+            return;
         }
     }
     echo "valid";
