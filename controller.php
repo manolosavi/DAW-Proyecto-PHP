@@ -101,19 +101,14 @@ function checkUsername(){
 
     $username = $_GET["username"];
 
-    $sql = 'SELECT username FROM \'users\' WHERE \'username\' = \''.$username.'\'';
+    $sql = 'SELECT username FROM `users` WHERE username = \''.$username.'\'';
     $rs = $conn->query($sql);
     if ($rs->num_rows == 0) {
         echo "valid";
         return;
+    } else {
+        echo "Username not available";
+        return;
     }
-    while ($row = mysqli_fetch_array($rs)){
-        $DBUsername = $row["username"];
-        if ($username == $DBUsername){
-            echo "Username already in use";
-            return;
-        }
-    }
-    echo "valid";
 }
 ?>

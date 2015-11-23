@@ -31,7 +31,7 @@ if ($_COOKIE['loggedIn']) {
         </form>
 
         <h1>Register</h1>
-        <form id="formR" action="controller.php" onsubmit="return validateR() || shouldSubmit;" method="post">
+        <form id="formR" action="controller.php" onsubmit="return validateR();" method="post">
             <p><input type="text" name="user" placeholder="Username"> <span id="response"></span></p>
             <p><input type="password" name="password" placeholder="Password"></p>
             <p id="register-error"><?php echo $_GET["register-error"] ?></p>
@@ -46,14 +46,14 @@ if ($_COOKIE['loggedIn']) {
     function validate() {
         var form = document.getElementById("form");
         if (!(form.user.value.indexOf(' ') === -1) || form.user.value.length == 0) {
-            document.getElementById("error").innerHTML = "Invalid username";
+            document.getElementById("login-error").innerHTML = "Invalid username";
             return false;
         }
         if (form.password.value.length < 8) {
-            document.getElementById("error").innerHTML = "Password is too short.";
+            document.getElementById("login-error").innerHTML = "Password is too short.";
             return false;
         }
-        document.getElementById("error").innerHTML = "";
+        document.getElementById("login-error").innerHTML = "";
 
         return true;
     }
@@ -61,8 +61,22 @@ if ($_COOKIE['loggedIn']) {
     var shouldSubmit = false;
 
     function validateR() {
-        checkAvailability();
-        return false;
+        var form = document.getElementById("formR");
+        if (!(form.user.value.indexOf(' ') === -1) || form.user.value.length == 0) {
+            document.getElementById("register-error").innerHTML = "Invalid username";
+            return false;
+        }
+        if (form.password.value.length < 8) {
+            document.getElementById("register-error").innerHTML = "Password is too short.";
+            return false;
+        }
+        document.getElementById("register-error").innerHTML = "";
+        if (!shouldSubmit) {
+            checkAvailability();
+            return false;
+        }
+
+        return true;
     }
 
     function checkAvailability() {
