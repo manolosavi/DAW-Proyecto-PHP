@@ -1,4 +1,5 @@
-function checkAvailability(input) {
+function checkAvailability() {
+    input = document.getElementsByName("user")[0];
     value = input.value;
 
     if (window.XMLHttpRequest) {

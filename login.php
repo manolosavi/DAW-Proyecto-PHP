@@ -23,12 +23,13 @@ if ($_COOKIE['loggedIn']) {
     <div class="wrapper">
         <h1>Login</h1>
         <form id="form" action="controller.php" onsubmit="return validate();" method="post">
-            <p><input type="text" name="user" onblur="checkAvailability(this)" placeholder="Username"></p>
+            <p><input type="text" name="user" placeholder="Username">
+                <span id="response"></span></p>
             <p><input type="password" name="password" placeholder="Password"></p>
             <p id="error"><?php echo $_GET["error"] ?></p>
             <div id="buttons">
                 <input type="submit" name="action" value="Login">
-                <input type="submit" name="action" value="Register">
+                <input type="submit" name="action" onclick="checkAvailability()" value="Register">
             </div>
         </form>
     </div>

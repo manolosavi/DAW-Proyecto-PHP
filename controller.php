@@ -6,7 +6,7 @@
  * Time: 3:31 PM
  */
 
-if($this->getRequest()->isMethod('GET')){
+if( $_SERVER['REQUEST_METHOD'] == 'GET'){
     checkUsername();
 }
 else{
