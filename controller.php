@@ -6,18 +6,23 @@
  * Time: 3:31 PM
  */
 
-switch ($_POST["action"]) {
-case "Register":
-    register();
-    break;
-case "Login":
-    login();
-    break;
-case "Log Out":
-    logout();
-    break;
-default:
-    break;
+if($this->getRequest()->isMethod('GET')){
+    checkUsername();
+}
+else{
+    switch ($_POST["action"]) {
+        case "Register":
+            register();
+            break;
+        case "Login":
+            login();
+            break;
+        case "Log Out":
+            logout();
+            break;
+        default:
+            break;
+    }
 }
 
 function register() {
@@ -25,7 +30,7 @@ function register() {
     session_start();
     $conn = new mysqli('localhost', 'root', '', 'login');
     if ($conn->connect_errno > 0) {
-        die('Unable to connect to database [' . $db->connect_error . ']');
+        die('Unable to connect to database [' . $conn->connect_error . ']');
     }
     $username = $conn->real_escape_string($_POST["user"]);
     $password = $_POST["password"];
@@ -58,7 +63,7 @@ function login() {
     session_start();
     $conn = new mysqli('localhost', 'root', '', 'login');
     if ($conn->connect_errno > 0) {
-        die('Unable to connect to database [' . $db->connect_error . ']');
+        die('Unable to connect to database [' . $conn->connect_error . ']');
     }
     $username = $conn->real_escape_string($_POST["user"]);
     $passwordEntered = $_POST["password"];
@@ -86,5 +91,24 @@ function logout() {
     setcookie("loggedIn", false, time()-1);
     header("location: login.php");
     exit;
+}
+
+function checkUsername(){
+    $conn = new mysqli('localhost', 'root', '', 'login');
+    if ($conn->connect_errno > 0) {
+        die('Unable to connect to database [' . $conn->connect_error . ']');
+    }
+
+    $username = $_GET["username"];
+
+    $sql = 'SELECT username FROM `users`';
+    $rs = $conn->query($sql);
+    while ($row = mysqli_fetch_array($rs)){
+        $DBUsername = $row["username"];
+        if ($username == $DBUsername){
+            echo "Username already in use";
+        }
+    }
+    echo "valid";
 }
 ?>

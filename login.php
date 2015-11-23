@@ -16,13 +16,14 @@ if ($_COOKIE['loggedIn']) {
     <meta charset="utf-8" />
     <link rel="stylesheet" type="text/css" href="main.css">
     <title>Login</title>
+    <script src="loginScript.js"></script>
 </head>
 <body>
 <div id="main">
     <div class="wrapper">
         <h1>Login</h1>
         <form id="form" action="controller.php" onsubmit="return validate();" method="post">
-            <p><input type="text" name="user" placeholder="Username"></p>
+            <p><input type="text" name="user" onblur="checkAvailability(this)" placeholder="Username"></p>
             <p><input type="password" name="password" placeholder="Password"></p>
             <p id="error"><?php echo $_GET["error"] ?></p>
             <div id="buttons">
