@@ -96,17 +96,15 @@ if ($_COOKIE['loggedIn']) {
 
         xmlhttp.onreadystatechange = function() {
             if (xmlhttp.readyState == 4) {
+//                response recieved, verify if username is valid
                 if (xmlhttp.responseText == "valid") {
                     document.getElementById("register-error").innerHTML = "";
-                    shouldSubmit = true;
-                    //document.getElementById("formR").submit();
                 } else {
                     document.getElementById("register-error").innerHTML = xmlhttp.responseText;
-                    shouldSubmit = false;
                 }
             }
         };
-
+//      request username verification via ajax
         xmlhttp.open("GET", "controller.php?username="  +  value, true);
         xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xmlhttp.send();
