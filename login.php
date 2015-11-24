@@ -5,8 +5,8 @@
  * Date: 11/17/15
  * Time: 1:03 PM
  */
-if ($_COOKIE['loggedIn']) {
-    header("location: success.php");
+if (isset($_COOKIE['loggedIn'])) {
+    header("location: controller.php?action=success");
     exit;
 }
 ?>
@@ -20,6 +20,7 @@ if ($_COOKIE['loggedIn']) {
 <body>
 <div id="main">
     <div class="wrapper">
+        <h1 id="registered-msg"><?php echo $_GET["registered"] ?></h1>
         <h1>Login</h1>
         <form id="form" action="controller.php" onsubmit="return validate();" method="post">
             <p><input type="text" name="user" placeholder="Username"> <span id="response"></span></p>
@@ -30,13 +31,10 @@ if ($_COOKIE['loggedIn']) {
             </div>
         </form>
 
-        <h1>Register</h1>
-        <form id="formR" action="controller.php" onsubmit="return validateR();" method="post">
-            <p><input type="text" name="user" placeholder="Username"> <span id="response"></span></p>
-            <p><input type="password" name="password" placeholder="Password"></p>
-            <p id="register-error"><?php echo $_GET["register-error"] ?></p>
+        <h1>Not registered?</h1>
+        <form action="register.php">
             <div id="buttons">
-                <input type="submit" name="action" value="Register">
+                <p></p><input type="submit" value="Register"></p>
             </div>
         </form>
     </div>
@@ -56,57 +54,6 @@ if ($_COOKIE['loggedIn']) {
         document.getElementById("login-error").innerHTML = "";
 
         return true;
-    }
-
-    var shouldSubmit = false;
-
-    function validateR() {
-        var form = document.getElementById("formR");
-        if (!(form.user.value.indexOf(' ') === -1) || form.user.value.length == 0) {
-            document.getElementById("register-error").innerHTML = "Invalid username";
-            return false;
-        }
-        if (form.password.value.length < 8) {
-            document.getElementById("register-error").innerHTML = "Password is too short.";
-            return false;
-        }
-        document.getElementById("register-error").innerHTML = "";
-        if (!shouldSubmit) {
-            checkAvailability();
-            return false;
-        }
-
-        return true;
-    }
-
-    function checkAvailability() {
-        input = document.getElementById("formR").user;
-        value = input.value;
-
-        if (window.XMLHttpRequest) {
-            // code for IE7+, Firefox, Chrome, Opera, Safari
-            xmlhttp = new XMLHttpRequest();
-        } else {
-            // code for IE6, IE5
-            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-        }
-
-        xmlhttp.onreadystatechange = function() {
-            if (xmlhttp.readyState == 4) {
-                if (xmlhttp.responseText == "valid") {
-                    document.getElementById("register-error").innerHTML = "";
-                    shouldSubmit = true;
-                    document.getElementById("formR").submit();
-                } else {
-                    document.getElementById("register-error").innerHTML = xmlhttp.responseText;
-                    shouldSubmit = false;
-                }
-            }
-        };
-
-        xmlhttp.open("GET", "controller.php?username="  +  value, true);
-        xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xmlhttp.send();
     }
 </script>
 </body>
