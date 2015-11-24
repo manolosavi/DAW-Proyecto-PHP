@@ -6,30 +6,22 @@
  * Time: 3:31 PM
  */
 
-include_once("User.php");
-
-if( $_SERVER['REQUEST_METHOD'] == 'GET'){
-    if (isset($_GET['username'])){
+switch ($_POST["action"]) {
+case "Register":
+    register();
+    break;
+case "Login":
+    login();
+    break;
+case "Log Out":
+    logout();
+    break;
+default:
+    if ($_GET["username"]) {
         checkUsername();
+        break;
     }
-    else{
-        getUserData();
-    }
-}
-else{
-    switch ($_POST["action"]) {
-        case "Register":
-            register();
-            break;
-        case "Login":
-            login();
-            break;
-        case "Log Out":
-            logout();
-            break;
-        default:
-            break;
-    }
+    break;
 }
 
 function register() {
@@ -40,20 +32,14 @@ function register() {
         die('Unable to connect to database [' . $conn->connect_error . ']');
     }
     $username = $conn->real_escape_string($_POST["user"]);
-    $email = $_POST["email"];
     $password = $_POST["password"];
 
     $sql = 'SELECT hash FROM `users` WHERE username = \''.$username.'\'';
     $rs = $conn->query($sql);
     if ($rs->num_rows != 0) {
-        header("location: login.php?register-error=Username not available");
+        header("location: register.php?register-error=Username not available");
         exit;
     }
-
-    //$subject = "Welcome";
-    //$text = "You have successfully logged in to our site. \n Username: " .$username;
-
-    //mail($email, $subject, $text); //send email to person logging in
 
 //  A higher "cost" is more secure but consumes more processing power
     $cost = 10;
@@ -66,12 +52,12 @@ function register() {
 
 //  Hash the password with the salt
     $hash = crypt($password, $salt);
-    $sql = 'INSERT INTO users (username, email, hash) values (\''.$username.'\', \''.$email.'\', \''.$hash.'\')';
+    $sql = 'INSERT INTO users (username, hash) values (\''.$username.'\', \''.$hash.'\')';
     if (!$conn->query($sql)) {
         echo "Error: (".$conn->errno.") ".$conn->error;
     }
 
-    header("location: login.php?registered=You just registered. Now login.");
+    header("location: login.php?registered=Registration successful.");
 
     exit;
 }
@@ -96,8 +82,9 @@ function login() {
         $DBHash = $row["hash"];
 //      Hashing the password with its hash as the salt returns the same hash
         if ( hash_equals(crypt($passwordEntered, $DBHash), $DBHash) ) {
-            setcookie("loggedIn", $username, time()+3600);
-            header("location: controller.php?action=success");
+            setcookie("loggedIn", true, time()+3600);
+            setcookie("username", $username, time()+3600);
+            header("location: success.php");
         } else {
             header("location: login.php?login-error=Incorrect password");
         }
@@ -107,11 +94,12 @@ function login() {
 
 function logout() {
     setcookie("loggedIn", false, time()-1);
+    setcookie("username", false, time()-1);
     header("location: login.php");
     exit;
 }
 
-function checkUsername(){
+function checkUsername() {
     $conn = new mysqli('localhost', 'root', '', 'login');
     if ($conn->connect_errno > 0) {
         die('Unable to connect to database [' . $conn->connect_error . ']');
@@ -128,31 +116,5 @@ function checkUsername(){
         echo "Username already in use.";
         return;
     }
-}
-
-function getUserData(){
-    $conn = new mysqli('localhost', 'root', '', 'login');
-    if ($conn->connect_errno > 0) {
-        die('Unable to connect to database [' . $conn->connect_error . ']');
-    }
-
-    $username = $_COOKIE["loggedIn"];
-    $sql = 'SELECT username, email FROM `users` WHERE username = \''.$username.'\'';
-    $rs = $conn->query($sql);
-    if ($rs->num_rows == 0) {
-        echo "Invalid cookie";
-        return;
-    }
-    if ($row = mysqli_fetch_array($rs)) {
-        $DBUsername = $row["username"];
-        $DBemail = $row["email"];
-    }
-
-    $user = new User($DBUsername, $DBemail);
-    //include 'success.php';
-
-    header("location: success.php?username=" .$user->username. "&email=".$user->email);
-    return;
-
 }
 ?>

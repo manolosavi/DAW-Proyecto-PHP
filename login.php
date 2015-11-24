@@ -5,8 +5,8 @@
  * Date: 11/17/15
  * Time: 1:03 PM
  */
-if (isset($_COOKIE['loggedIn'])) {
-    header("location: controller.php?action=success");
+if ($_COOKIE['loggedIn']) {
+    header("location: success.php");
     exit;
 }
 ?>
@@ -23,7 +23,7 @@ if (isset($_COOKIE['loggedIn'])) {
         <h1 id="registered-msg"><?php echo $_GET["registered"] ?></h1>
         <h1>Login</h1>
         <form id="form" action="controller.php" onsubmit="return validate();" method="post">
-            <p><input type="text" name="user" placeholder="Username"> <span id="response"></span></p>
+            <p><input type="text" name="user" placeholder="Username"></p>
             <p><input type="password" name="password" placeholder="Password"></p>
             <p id="login-error"><?php echo $_GET["login-error"] ?></p>
             <div id="buttons">
@@ -34,7 +34,7 @@ if (isset($_COOKIE['loggedIn'])) {
         <h1>Not registered?</h1>
         <form action="register.php">
             <div id="buttons">
-                <p></p><input type="submit" value="Register"></p>
+                <p><input type="submit" value="Register"></p>
             </div>
         </form>
     </div>
@@ -45,10 +45,6 @@ if (isset($_COOKIE['loggedIn'])) {
         var form = document.getElementById("form");
         if (!(form.user.value.indexOf(' ') === -1) || form.user.value.length == 0) {
             document.getElementById("login-error").innerHTML = "Invalid username";
-            return false;
-        }
-        if (form.password.value.length < 8) {
-            document.getElementById("login-error").innerHTML = "Password is too short.";
             return false;
         }
         document.getElementById("login-error").innerHTML = "";

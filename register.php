@@ -5,8 +5,8 @@
  * Date: 24.11.2015
  * Time: 15:22
  */
-if (isset($_COOKIE['loggedIn'])) {
-    header("location: controller.php?action=success");
+if ($_COOKIE['loggedIn']) {
+    header("location: success.php");
     exit;
 }
 ?>
@@ -22,10 +22,9 @@ if (isset($_COOKIE['loggedIn'])) {
     <div class="wrapper">
         <h1>Register</h1>
         <form id="formR" action="controller.php" onsubmit="return validateR();" method="post">
-            <p><input type="text" name="user" placeholder="Username" onblur="checkAvailability()"></p>
-            <p><input type="email" name="email" placeholder="Email" onblur="checkEmail()"></p>
-            <p><input type="password" name="password" placeholder="Password" onblur="checkPasswordLength()"></p>
-            <p><input type="password" name="password2" placeholder="Re-type password" onblur="checkPasswordMatch()"</p></p>
+            <p><input type="text" name="user" placeholder="Username" onkeyup="checkAvailability()" onblur="checkAvailability()"></p>
+            <p><input type="password" name="password" placeholder="Password" onblur="checkPasswordLength();checkAvailability()"></p>
+            <p><input type="password" name="password2" placeholder="Re-type password" onblur="checkPasswordMatch();checkAvailability()"</p></p>
             <p id="register-error"><?php echo $_GET["register-error"] ?></p>
             <div id="buttons">
                 <input type="submit" name="action" value="Register">
@@ -35,33 +34,35 @@ if (isset($_COOKIE['loggedIn'])) {
 </div>
 
 <script type="text/javascript">
-
-    var shouldSubmit = false;
-
     function validateR() {
+        if (document.getElementById("register-error").innerHTML != "") {
+            return false;
+        }
+
         var form = document.getElementById("formR");
         if (!(form.user.value.indexOf(' ') === -1) || form.user.value.length == 0) {
-            document.getElementById("register-error").innerHTML = "Invalid username";
+            document.getElementById("register-error").innerHTML = "Invalid username.";
             return false;
         }
-        if (!checkEmail()){
+
+        if (!checkEmail()) {
             return false;
         }
-        if(!checkPasswordMatch()){
-            return false;
-        }
+
         if (!checkPasswordLength()) {
             return false;
         }
-        document.getElementById("register-error").innerHTML = "";
-        if (!shouldSubmit) {
+
+        if (!checkPasswordMatch()) {
             return false;
         }
+
+        document.getElementById("register-error").innerHTML = "";
 
         return true;
     }
 
-    function checkPasswordLength(){
+    function checkPasswordLength() {
         var form = document.getElementById("formR");
         if (form.password.value.length < 8) {
             document.getElementById("register-error").innerHTML = "Password is too short.";
@@ -71,21 +72,10 @@ if (isset($_COOKIE['loggedIn'])) {
         return true;
     }
 
-    function checkEmail(){
+    function checkPasswordMatch() {
         var form = document.getElementById("formR");
-        if (filter_var(form.email.value, FILTER_VALIDATE_EMAIL)) {
-            document.getElementById("register-error").innerHTML = "Email is not valid.";
-            return false;
-        }
-        document.getElementById("register-error").innerHTML = "";
-        return true;
-    }
-
-    function checkPasswordMatch(){
-        var form = document.getElementById("formR");
-        if (form.password.value != form.password2.value)
-        {
-            document.getElementById("register-error").innerHTML = "Passwords didn't match.";
+        if (form.password.value != form.password2.value) {
+            document.getElementById("register-error").innerHTML = "Passwords don't match.";
             return false;
         }
         document.getElementById("register-error").innerHTML = "";

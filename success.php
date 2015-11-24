@@ -20,9 +20,7 @@ if (!$_COOKIE["loggedIn"]) {
 <body>
 <div id="main">
     <div class="wrapper">
-        <h1>You're currently logged in as:</h1>
-        <h1>Username: <?php echo $_GET['username'] ?> </h1>
-        <h1>Email: <?php echo $_GET['email'] ?></h1>
+        <h1>You're currently logged in as: <?php echo $_COOKIE["username"] ?></h1>
         <form id="form" action="controller.php" method="post">
             <div id="buttons">
                 <input type="submit" name="action" value="Log Out">
