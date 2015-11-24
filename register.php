@@ -23,7 +23,7 @@ if (isset($_COOKIE['loggedIn'])) {
         <h1>Register</h1>
         <form id="formR" action="controller.php" onsubmit="return validateR();" method="post">
             <p><input type="text" name="user" placeholder="Username" onblur="checkAvailability()"></p>
-            <p><input type="text" name="email" placeholder="Email" onblur="checkEmail()"></p>
+            <p><input type="email" name="email" placeholder="Email" onblur="checkEmail()"></p>
             <p><input type="password" name="password" placeholder="Password" onblur="checkPasswordLength()"></p>
             <p><input type="password" name="password2" placeholder="Re-type password" onblur="checkPasswordMatch()"</p></p>
             <p id="register-error"><?php echo $_GET["register-error"] ?></p>
